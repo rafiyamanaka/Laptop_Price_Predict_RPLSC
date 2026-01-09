@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Laptop Price Predictor</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; }
+    .row { display: grid; grid-template-columns: 220px 1fr; gap: 8px; margin-bottom: 10px; align-items: center; }
+    input, select { padding: 8px; width: 100%; }
+    button { padding: 10px 14px; }
+    .card { border: 1px solid #ddd; border-radius: 10px; padding: 16px; max-width: 720px; }
+    .muted { color: #666; font-size: 14px; }
+    .error { color: #b00020; margin: 12px 0; }
+    .result { margin-top: 16px; padding: 12px; background: #f6f6f6; border-radius: 10px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Laptop Price Predictor</h1>
+    <p class="muted">Model memprediksi harga dalam Euro dari dataset, lalu ditampilkan juga dalam Rupiah (kurs 1€ = Rp {{ eur_to_idr }}).</p>
+
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <form method="post" action="/predict">
+      {% csrf_token %}
+
+      <div class="row">
+        <label for="product_name">Nama Produk (opsional)</label>
+        <input id="product_name" name="product_name" placeholder="Contoh: Asus Vivobook" />
+      </div>
+
+      <div class="row">
+        <label for="company">Company</label>
+        <select id="company" name="company" required>
+          <option value="" selected disabled>Pilih Company</option>
+          {% for v in choices.Company %}
+            <option value="{{ v }}">{{ v }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="type_name">TypeName</label>
+        <select id="type_name" name="type_name" required>
+          <option value="" selected disabled>Pilih TypeName</option>
+          {% for v in choices.TypeName %}
+            <option value="{{ v }}">{{ v }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="inches">Inches</label>
+        <input id="inches" name="inches" type="number" step="0.1" placeholder="15.6" required />
+      </div>
+
+      <div class="row">
+        <label for="ram_gb">RAM (GB)</label>
+        <input id="ram_gb" name="ram_gb" type="number" step="1" placeholder="8" required />
+      </div>
+
+      <div class="row">
+        <label for="cpu_company">CPU Company</label>
+        <select id="cpu_company" name="cpu_company" required>
+          <option value="" selected disabled>Pilih CPU Company</option>
+          {% for v in choices.CPU_Company %}
+            <option value="{{ v }}">{{ v }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="cpu_frequency_ghz">CPU Frequency (GHz)</label>
+        <input id="cpu_frequency_ghz" name="cpu_frequency_ghz" type="number" step="0.01" placeholder="2.5" required />
+      </div>
+
+      <div class="row">
+        <label for="memory">Memory</label>
+        <select id="memory" name="memory" required>
+          <option value="" selected disabled>Pilih Memory</option>
+          {% for v in choices.Memory %}
+            <option value="{{ v }}">{{ v }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="weight_kg">Weight (kg)</label>
+        <input id="weight_kg" name="weight_kg" type="number" step="0.01" placeholder="1.8" required />
+      </div>
+
+      <div class="row">
+        <label for="opsys">OpSys</label>
+        <select id="opsys" name="opsys" required>
+          <option value="" selected disabled>Pilih OpSys</option>
+          {% for v in choices.OpSys %}
+            <option value="{{ v }}">{{ v }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <button type="submit">Predict</button>
+    </form>
+
+    {% if pred_eur %}
+      <div class="result">
+        <h2>Hasil Prediksi</h2>
+        {% if submitted.product_name %}
+          <div><strong>Nama Produk:</strong> {{ submitted.product_name }}</div>
+        {% endif %}
+        <div><strong>Prediksi (Euro):</strong> € {{ pred_eur|floatformat:2 }}</div>
+        <div><strong>Prediksi (Rupiah):</strong> Rp {{ pred_idr|floatformat:0 }}</div>
+        <div class="muted">Kurs asumsi: 1€ = Rp {{ eur_to_idr }}</div>
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>

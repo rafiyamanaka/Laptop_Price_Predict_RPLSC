@@ -1,0 +1,347 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Predict - Laptop Price</title>
+  <style>
+    :root {
+      --bg: #fafafa;
+      --panel: #ffffff;
+      --text: #1a1a1a;
+      --muted: rgba(26, 26, 26, 0.7);
+      --border: rgba(26, 26, 26, 0.10);
+      --shadow: 0 12px 35px rgba(0, 0, 0, 0.06);
+      --radius: 16px;
+      --pad-x: 36px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      font-family: 'Helvetica Neue', Arial, system-ui, -apple-system, Segoe UI, sans-serif;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    .navWrap {
+      background: #ffffff;
+      border-bottom: 1px solid rgba(26,26,26,0.08);
+    }
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 14px var(--pad-x) 56px;
+    }
+    .navContainer {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 var(--pad-x);
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 80px;
+    }
+    .brand { font-weight: 800; letter-spacing: 0.4px; font-size: 18px; }
+    .navlinks { display: flex; gap: 18px; align-items: center; }
+    .navlinks a { color: rgba(26,26,26,0.6); font-size: 14px; }
+    .navlinks a.active { color: rgba(26,26,26,0.9); font-weight: 650; }
+    .navlinks a:hover { color: rgba(26,26,26,0.9); }
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #111111;
+      color: #ffffff;
+      font-weight: 650;
+      font-size: 14px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 22px;
+      margin-top: 24px;
+      align-items: start;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) + 4px);
+      box-shadow: var(--shadow);
+      padding: 22px 24px 26px;
+    }
+    h1 { margin: 0 0 4px; letter-spacing: -0.3px; font-size: 20px; font-weight: 700; }
+    .muted { color: var(--muted); font-size: 13px; margin: 0; }
+
+    form { margin-top: 18px; display: grid; gap: 12px; }
+    .field { display: grid; gap: 6px; }
+    label { color: rgba(26,26,26,0.68); font-size: 12px; font-weight: 600; letter-spacing: 0.1px; }
+    input, select {
+      width: 100%;
+      height: 38px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(26,26,26,0.12);
+      background: #ffffff;
+      color: var(--text);
+      outline: none;
+      font-size: 13px;
+    }
+    input::placeholder { color: rgba(26,26,26,0.35); }
+    select:invalid { color: rgba(26,26,26,0.35); }
+    option { color: #111; }
+
+    .btnPrimary {
+      margin-top: 12px;
+      width: 100%;
+      height: 38px;
+      border-radius: 10px;
+      border: 1px solid rgba(17, 17, 17, 0.85);
+      background: #111111;
+      color: #ffffff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btnPrimary:hover { background: #222222; }
+
+    .resultTitle { display: flex; justify-content: space-between; align-items: center; }
+    .resultTable { margin-top: 14px; display: grid; gap: 10px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .cellLabel { color: rgba(26,26,26,0.55); font-size: 12px; font-weight: 600; }
+    .cellValue { color: rgba(26,26,26,0.9); font-size: 13px; font-weight: 700; }
+    .priceBtn {
+      margin-top: 10px;
+      width: 100%;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid rgba(17,17,17,0.85);
+      background: #111111;
+      color: #ffffff;
+      font-weight: 700;
+      text-align: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .footer {
+      margin-top: 44px;
+      padding-top: 22px;
+      border-top: 1px solid rgba(17, 17, 17, 0.10);
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 14px;
+      color: rgba(17,17,17,0.58);
+      font-size: 13px;
+    }
+    .footer .brandRow { color: rgba(17,17,17,0.92); font-weight: 800; margin-bottom: 10px; }
+    .footer h4 { margin: 0 0 10px; color: rgba(17,17,17,0.92); font-size: 13px; }
+    .footer a { color: rgba(17,17,17,0.58); display: block; margin: 6px 0; }
+    .footer a:hover { color: rgba(17,17,17,0.92); }
+
+    @media (max-width: 980px) {
+      :root { --pad-x: 20px; }
+      .layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="navWrap">
+    <div class="navContainer">
+      <header class="nav">
+        <div class="brand">cyber</div>
+        <nav class="navlinks">
+          <a href="/">Home</a>
+          <a href="#about">About</a>
+          <a class="active" href="/predict">Predict</a>
+        </nav>
+        <a class="cta" href="/">Back</a>
+      </header>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="layout">
+      <main class="card">
+        <h1>Price Prediction</h1>
+        <p class="muted">Lengkapi detail laptop untuk memprediksi harga dalam Euro dan Rupiah.</p>
+
+        {% if error %}
+          <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form method="post" action="/predict">
+          {% csrf_token %}
+
+          <div class="field">
+            <label for="company">Brand</label>
+            <select id="company" name="company" required>
+              <option value="" selected disabled>Choose brand name</option>
+              {% for v in choices.Company %}
+                <option value="{{ v }}">{{ v }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="type_name">Type Product</label>
+            <select id="type_name" name="type_name" required>
+              <option value="" selected disabled>Choose type of product</option>
+              {% for v in choices.TypeName %}
+                <option value="{{ v }}">{{ v }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="product_name">Product</label>
+            <select id="product_name" name="product_name">
+              <option value="" selected disabled>Choose product</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="inches">Inches</label>
+            <input id="inches" name="inches" type="number" step="0.1" placeholder="15" required />
+          </div>
+
+          <div class="field">
+            <label for="ram_gb">RAM (GB)</label>
+            <input id="ram_gb" name="ram_gb" type="number" step="1" placeholder="4" required />
+          </div>
+
+          <div class="field">
+            <label for="cpu_company">CPU Company</label>
+            <select id="cpu_company" name="cpu_company" required>
+              <option value="" selected disabled>Choose cpu company</option>
+              {% for v in choices.CPU_Company %}
+                <option value="{{ v }}">{{ v }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="cpu_frequency_ghz">CPU Frequency GHz</label>
+            <input id="cpu_frequency_ghz" name="cpu_frequency_ghz" type="number" step="0.01" placeholder="2.5" required />
+          </div>
+
+          <div class="field">
+            <label for="memory">Memory</label>
+            <select id="memory" name="memory" required>
+              <option value="" selected disabled>Choose memory</option>
+              {% for v in choices.Memory %}
+                <option value="{{ v }}">{{ v }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="weight_kg">Weight (kg)</label>
+            <input id="weight_kg" name="weight_kg" type="number" step="0.01" placeholder="2.5" required />
+          </div>
+
+          <div class="field">
+            <label for="opsys">Operating System</label>
+            <select id="opsys" name="opsys" required>
+              <option value="" selected disabled>Choose OS</option>
+              {% for v in choices.OpSys %}
+                <option value="{{ v }}">{{ v }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <button class="btnPrimary" type="submit">Predict</button>
+        </form>
+      </main>
+
+      <aside class="card" aria-label="Hasil prediksi">
+        <div class="resultTitle">
+          <h1 style="margin: 0; font-size: 16px; font-weight: 700;">Price Prediction</h1>
+        </div>
+        <div class="resultTable">
+          <div class="row" style="grid-template-columns: 1fr;">
+            <div>
+              <div class="cellLabel">Product</div>
+              <div class="cellValue">{{ submitted.product_name|default:'-' }}</div>
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <div class="cellLabel">Price Prediction (Euro)</div>
+              <div class="cellValue">{% if pred_eur %}€ {{ pred_eur|floatformat:3 }}{% else %}€ 0,000{% endif %}</div>
+            </div>
+            <div>
+              <div class="cellLabel">Price Prediction (IDR)</div>
+              <div class="cellValue">{% if pred_idr %}IDR {{ pred_idr|floatformat:2 }}{% else %}IDR 0,00{% endif %}</div>
+            </div>
+          </div>
+          <div class="priceBtn">{% if pred_idr %}IDR {{ pred_idr|floatformat:2 }}{% else %}IDR 0,00{% endif %}</div>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="footer">
+      <div>
+        <div class="brandRow">cyber</div>
+        <div>Landing page untuk aplikasi prediksi harga laptop berbasis dataset.</div>
+      </div>
+      <div>
+        <h4>Menu</h4>
+        <a href="/">Home</a>
+        <a href="#about">About</a>
+        <a href="/predict">Predict</a>
+      </div>
+    </footer>
+  </div>
+
+</body>
+  <script>
+    const productSelect = document.getElementById('product_name');
+    const brandSelect = document.getElementById('company');
+    const typeSelect = document.getElementById('type_name');
+    let productsByBrand = {};
+
+    function resetProductOptions() {
+      productSelect.innerHTML = '<option value="" disabled selected>Choose product</option>';
+    }
+
+    function populateProducts() {
+      const brand = brandSelect.value;
+      const type = typeSelect.value;
+      resetProductOptions();
+      if (!brand || !productsByBrand[brand]) return;
+
+      const options = productsByBrand[brand]
+        .filter(item => !type || item.type === type)
+        .map(item => item.product);
+
+      const uniqueProducts = Array.from(new Set(options));
+      uniqueProducts.forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        productSelect.appendChild(opt);
+      });
+    }
+
+    fetch('{% static "predictor/products.json" %}')
+      .then(res => res.json())
+      .then(data => {
+        productsByBrand = data;
+        populateProducts();
+      })
+      .catch(() => resetProductOptions());
+
+    brandSelect.addEventListener('change', populateProducts);
+    typeSelect.addEventListener('change', populateProducts);
+  </script>
+</html>

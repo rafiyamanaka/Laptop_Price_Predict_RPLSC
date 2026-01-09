@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="en">
+<head>
+  {% load static %}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Laptop Price Prediction</title>
+  <style>
+    :root {
+      --hero-bg: #211C24;
+      --page-bg: #ffffff;
+      --text: #111111;
+      --muted: rgba(17, 17, 17, 0.6);
+      --border: rgba(17, 17, 17, 0.10);
+      --shadow: 0 18px 55px rgba(0, 0, 0, 0.12);
+      --radius: 18px;
+      --nav-h: 80px;
+      --pad-x: 160px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--page-bg);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      line-height: 1.4;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 18px 16px 56px;
+    }
+
+    .padX {
+      padding-left: var(--pad-x);
+      padding-right: var(--pad-x);
+    }
+
+    .navWrap {
+      background: #ffffff;
+      border-bottom: 1px solid rgba(17, 17, 17, 0.08);
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--nav-h);
+    }
+    .brand {
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      font-size: 22px;
+      line-height: 1;
+    }
+    .navlinks { display: flex; gap: 26px; align-items: center; }
+    .navlinks a { color: rgba(17, 17, 17, 0.45); font-size: 15px; }
+    .navlinks a.active { color: rgba(17, 17, 17, 0.85); font-weight: 650; }
+    .navlinks a:hover { color: rgba(17, 17, 17, 0.85); }
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      height: 48px;
+      padding: 0 18px;
+      border-radius: 10px;
+      border: 1px solid rgba(17, 17, 17, 0.12);
+      background: #111111;
+      color: #ffffff;
+      font-weight: 650;
+      font-size: 14px;
+    }
+    .arrow {
+      display: inline-block;
+      border: 0;
+      background: transparent;
+      line-height: 1;
+      font-size: 18px;
+      margin-left: 2px;
+    }
+
+    .heroWrap {
+      background: var(--hero-bg);
+    }
+    .hero {
+      margin: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      border-radius: 0;
+      border: 0;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 22px;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+      min-height: calc(100vh - var(--nav-h));
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: 72px;
+      letter-spacing: -0.6px;
+      line-height: 1.02;
+      color: #ffffff;
+    }
+    .hero h1 span { display: block; font-weight: 750; }
+    .heroKicker {
+      color: rgba(255,255,255,0.55);
+      font-size: 64px;
+      font-weight: 300;
+      letter-spacing: -0.8px;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .hero p { margin: 14px 0 22px; color: rgba(255,255,255,0.55); max-width: 560px; font-size: 16px; }
+    .hero .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 48px;
+      padding: 0 18px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.55);
+      background: transparent;
+      color: #ffffff;
+      font-weight: 650;
+      width: 160px;
+    }
+    .hero .btn:hover { background: rgba(255,255,255,0.10); }
+
+    .heroMedia {
+      height: auto;
+      display: grid;
+      place-items: center;
+    }
+    .heroImg {
+      width: min(900px, 100%);
+      height: auto;
+      transform: translateX(8px);
+      filter: drop-shadow(0 26px 65px rgba(0,0,0,0.55));
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .section { margin-top: 40px; }
+
+    .logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 34px;
+      padding: 18px 8px;
+      color: rgba(17, 17, 17, 0.28);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      flex-wrap: wrap;
+    }
+
+    .panel {
+      background: #ffffff;
+      border: 1px solid rgba(17, 17, 17, 0.08);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    }
+
+    .categoryWrap {
+      background: #FAFAFA;
+      padding: 54px 0;
+    }
+    .categoryTitle {
+      margin: 0 0 26px;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+    .categoryGrid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 22px;
+    }
+    .categoryCard {
+      display: grid;
+      place-items: center;
+      gap: 12px;
+      height: 148px;
+      border-radius: 16px;
+      background: #EDEDED;
+      border: 0;
+      box-shadow: none;
+      color: rgba(17,17,17,0.92);
+      font-weight: 600;
+      text-align: center;
+    }
+    .categoryIcon {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      color: rgba(17,17,17,0.92);
+    }
+    .categoryIcon svg {
+      width: 42px;
+      height: 42px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .sectionHead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .sectionHead h2 { margin: 0; font-size: 18px; letter-spacing: -0.2px; }
+    .chevrons {
+      display: inline-flex;
+      gap: 8px;
+    }
+    .iconBtn {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      user-select: none;
+    }
+
+    .grid6 {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .cat {
+      background: rgba(17,17,17,0.03);
+      border: 1px solid rgba(17, 17, 17, 0.08);
+      border-radius: 14px;
+      padding: 18px 12px;
+      text-align: center;
+      color: rgba(17, 17, 17, 0.55);
+      font-size: 12px;
+    }
+    .cat .ico {
+      width: 46px;
+      height: 46px;
+      margin: 0 auto 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(17, 17, 17, 0.10);
+      background: rgba(17,17,17,0.06);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 26px;
+      align-items: center;
+      color: rgba(17,17,17,0.45);
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+    .tabs .tab {
+      position: relative;
+      padding: 6px 0;
+      font-weight: 500;
+      cursor: pointer;
+      user-select: none;
+    }
+    .tabs .tab.active {
+      color: rgba(17,17,17,0.92);
+      font-weight: 650;
+    }
+    .tabs .tab.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -2px;
+      height: 2px;
+      background: rgba(17,17,17,0.92);
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .product {
+      background: #ffffff;
+      border: 1px solid rgba(17, 17, 17, 0.08);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: none;
+      display: grid;
+      gap: 10px;
+      min-height: 340px;
+    }
+    .productTop {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      height: 18px;
+    }
+    .heart {
+      width: 18px;
+      height: 18px;
+      stroke: rgba(17,17,17,0.35);
+      fill: none;
+      stroke-width: 2;
+    }
+    .productMedia {
+      height: 140px;
+      display: grid;
+      place-items: center;
+      margin-top: 8px;
+    }
+    .productImg {
+      width: 120px;
+      height: auto;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    .productBody {
+      text-align: center;
+      padding: 6px 10px 0;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+    .product .name { font-weight: 600; font-size: 12px; line-height: 1.35; color: rgba(17,17,17,0.88); }
+    .product .price { font-weight: 800; letter-spacing: -0.2px; font-size: 18px; }
+    .product .buy {
+      height: 40px;
+      width: 140px;
+      margin: 6px auto 0;
+      border-radius: 10px;
+      border: 0;
+      background: #111111;
+      color: #ffffff;
+      font-weight: 650;
+      cursor: default;
+    }
+
+    .cards3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .card {
+      background: #ffffff;
+      border: 1px solid rgba(17, 17, 17, 0.08);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .card h3 { margin: 0 0 8px; font-size: 14px; }
+    .card p { margin: 0; color: rgba(17,17,17,0.58); font-size: 12px; }
+
+    .stepsSection {
+      margin: 0;
+      padding: 82px var(--pad-x) 94px;
+      background: #FAFAFA;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      width: 100%;
+    }
+    .stepsHeader {
+      text-align: center;
+      margin-bottom: 34px;
+      display: grid;
+      gap: 8px;
+    }
+    .stepsKicker {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      color: rgba(17,17,17,0.65);
+    }
+    .stepsTitle {
+      margin: 0;
+      font-size: 48px;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+      color: #111217;
+    }
+    .stepsSubtitle {
+      font-size: 42px;
+      font-weight: 750;
+      letter-spacing: -0.4px;
+      color: rgba(17,17,17,0.32);
+    }
+    .stepsGrid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .stepCard {
+      background: #0f161d;
+      color: #e5e9ef;
+      border-radius: 20px;
+      padding: 22px 20px;
+      min-height: 230px;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: none;
+      display: grid;
+      align-content: start;
+      gap: 12px;
+    }
+    .stepIcon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.06);
+      display: grid;
+      place-items: center;
+      color: #d7dee6;
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    .stepIcon svg { width: 26px; height: 26px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .stepCard h3 { margin: 0; font-size: 16px; font-weight: 700; color: #ffffff; }
+    .stepCard p { margin: 0; color: rgba(229,233,239,0.72); font-size: 14px; line-height: 1.55; }
+
+    .sale {
+      position: relative;
+      margin-top: 26px;
+      border-radius: calc(var(--radius) + 8px);
+      overflow: hidden;
+      padding: 96px 64px;
+      background: url("{% static 'predictor/images/Banner.png' %}") center/cover no-repeat;
+      color: #ffffff;
+      display: grid;
+      justify-items: center;
+      text-align: center;
+      min-height: 320px;
+      border: 0;
+      box-shadow: 0 18px 55px rgba(0,0,0,0.18);
+    }
+    .sale::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(0,0,0,0.62), rgba(0,0,0,0.28));
+    }
+    .saleContent {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 14px;
+      align-items: center;
+      justify-items: center;
+    }
+    .sale h2 { margin: 0; font-size: 56px; letter-spacing: -0.6px; font-weight: 500; }
+    .sale h2 span { font-weight: 800; }
+    .sale p { margin: 0; color: rgba(255,255,255,0.78); font-size: 16px; }
+    .sale .shop {
+      margin-top: 4px;
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.65);
+      background: transparent;
+      color: #ffffff;
+      font-weight: 650;
+      min-width: 148px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .footer {
+      margin-top: 44px;
+      padding-top: 22px;
+      border-top: 1px solid rgba(17, 17, 17, 0.10);
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 14px;
+      color: rgba(17,17,17,0.58);
+      font-size: 13px;
+    }
+    .footer .brandRow { color: rgba(17,17,17,0.92); font-weight: 800; margin-bottom: 10px; }
+    .footer h4 { margin: 0 0 10px; color: rgba(17,17,17,0.92); font-size: 13px; }
+    .footer a { color: rgba(17,17,17,0.58); display: block; margin: 6px 0; }
+    .footer a:hover { color: rgba(17,17,17,0.92); }
+
+    @media (max-width: 980px) {
+      :root { --pad-x: 24px; }
+      .hero { grid-template-columns: 1fr; }
+      .brand { font-size: 20px; }
+      .heroKicker { font-size: 48px; }
+      .hero h1 { font-size: 52px; }
+      .heroMedia { height: auto; }
+      .grid6 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .categoryGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+      .products { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .cards3 { grid-template-columns: 1fr; }
+      .sale { padding: 70px 28px; min-height: 260px; }
+      .sale h2 { font-size: 42px; }
+      .footer { grid-template-columns: 1fr; }
+      .stepsSection { padding: 60px 24px 70px; }
+      .stepsTitle { font-size: 36px; }
+      .stepsSubtitle { font-size: 28px; }
+      .stepsGrid { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <script>
+    window.__heroFallback = "{% static 'predictor/images/hero-laptops.svg' %}";
+
+    // Product data for each tab
+    const productData = {
+      'new-arrival': [
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$900' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$900' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$900' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$900' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$900' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$900' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$900' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$900' }
+      ],
+      'bestseller': [
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$1299' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$1299' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$1299' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$1299' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$1299' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$1299' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$1299' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$1299' }
+      ],
+      'featured': [
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$799' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$799' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$799' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$799' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$799' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$799' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$799' },
+        { name: 'Apple Macbook Pro Max<br/>128GB Deep Purple', price: '$799' }
+      ]
+    };
+
+    function switchTab(tabId) {
+      // Update tab active state
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+
+      // Update products
+      const products = productData[tabId];
+      const productCards = document.querySelectorAll('.product');
+      productCards.forEach((card, index) => {
+        if (products[index]) {
+          card.querySelector('.name').innerHTML = products[index].name;
+          card.querySelector('.price').textContent = products[index].price;
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+          switchTab(this.getAttribute('data-tab'));
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <div class="navWrap">
+    <header class="nav padX">
+      <div class="brand">cyber</div>
+      <nav class="navlinks">
+        <a class="active" href="/">Home</a>
+        <a href="#about">About</a>
+      </nav>
+      <a class="cta" href="/predict">Predict <span class="arrow">›</span></a>
+    </header>
+  </div>
+
+  <section class="heroWrap">
+    <div class="hero padX">
+      <div>
+        <div class="heroKicker">Laptop</div>
+        <h1><span>Price Prediction</span></h1>
+        <p>Accurate Laptop Price Prediction Powered by Regression.</p>
+        <a class="btn" href="/predict">Predict now</a>
+      </div>
+      <div class="heroMedia">
+        <img
+          class="heroImg"
+          src="{% static 'predictor/images/Laptop-hero.png' %}"
+          alt="Laptop products"
+          onerror="this.onerror=null;this.src=window.__heroFallback;"
+        />
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+
+    <section class="section">
+      <div class="logos" aria-label="Partner logos">
+        <div>SAMSUNG</div>
+        <div>intel</div>
+        <div>cisco</div>
+        <div>Google</div>
+        <div>VISA</div>
+        <div>frog</div>
+        <div>AUTODESK</div>
+      </div>
+    </section>
+
+  </div>
+
+  <section class="categoryWrap">
+    <div class="padX">
+      <h2 class="categoryTitle">Predict By Category</h2>
+      <div class="categoryGrid">
+        <div class="categoryCard">
+          <div class="categoryIcon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M20 21V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v14"/><path d="M8 21v-4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v4"/><path d="M9 9h.01"/><path d="M15 9h.01"/><path d="M9 12h.01"/><path d="M15 12h.01"/></svg>
+          </div>
+          <div>Company</div>
+        </div>
+
+        <div class="categoryCard">
+          <div class="categoryIcon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M6 6v14"/><path d="M18 6v14"/><path d="M6 10h12"/><path d="M6 14h12"/><path d="M6 18h12"/></svg>
+          </div>
+          <div>TypeName</div>
+        </div>
+
+        <div class="categoryCard">
+          <div class="categoryIcon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M9 3h6"/><path d="M10 6h4"/><path d="M7 8h10"/><path d="M6 8v8"/><path d="M18 8v8"/><path d="M8 16h8"/><path d="M9 21h6"/></svg>
+          </div>
+          <div>CPU Company</div>
+        </div>
+
+        <div class="categoryCard">
+          <div class="categoryIcon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M7 7h10v10H7z"/><path d="M4 10h3"/><path d="M17 10h3"/><path d="M4 14h3"/><path d="M17 14h3"/><path d="M10 4v3"/><path d="M14 4v3"/><path d="M10 17v3"/><path d="M14 17v3"/></svg>
+          </div>
+          <div>RAM (GB)</div>
+        </div>
+
+        <div class="categoryCard">
+          <div class="categoryIcon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M8 7V5h8v2"/><path d="M8 17v2h8v-2"/><path d="M7 12h10"/></svg>
+          </div>
+          <div>Memory</div>
+        </div>
+
+        <div class="categoryCard">
+          <div class="categoryIcon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 3v10"/><path d="M8 21h8"/><path d="M10 21v-3a2 2 0 0 1 4 0v3"/><path d="M7 13h10"/></svg>
+          </div>
+          <div>OpSys</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+
+    <section class="section panel">
+      <div class="tabs">
+        <div class="tab active" data-tab="new-arrival">New Arrival</div>
+        <div class="tab" data-tab="bestseller">Bestseller</div>
+        <div class="tab" data-tab="featured">Featured Products</div>
+      </div>
+      <div class="products">
+        <div class="product">
+          <div class="productTop" aria-hidden="true">
+            <svg class="heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+          </div>
+          <div class="productMedia">
+            <img class="productImg" src="{% static 'predictor/images/Macbook.png' %}" alt="Macbook" />
+          </div>
+          <div class="productBody">
+            <div class="name">Apple Macbook Pro Max<br/>128GB Deep Purple</div>
+            <div class="price">$900</div>
+            <button class="buy" type="button">Buy Now</button>
+          </div>
+        </div>
+        <div class="product">
+          <div class="productTop" aria-hidden="true">
+            <svg class="heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+          </div>
+          <div class="productMedia">
+            <img class="productImg" src="{% static 'predictor/images/Macbook.png' %}" alt="Macbook" />
+          </div>
+          <div class="productBody">
+            <div class="name">Apple Macbook Pro Max<br/>128GB Deep Purple</div>
+            <div class="price">$900</div>
+            <button class="buy" type="button">Buy Now</button>
+          </div>
+        </div>
+        <div class="product">
+          <div class="productTop" aria-hidden="true">
+            <svg class="heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+          </div>
+          <div class="productMedia">
+            <img class="productImg" src="{% static 'predictor/images/Macbook.png' %}" alt="Macbook" />
+          </div>
+          <div class="productBody">
+            <div class="name">Apple Macbook Pro Max<br/>128GB Deep Purple</div>
+            <div class="price">$900</div>
+            <button class="buy" type="button">Buy Now</button>
+          </div>
+        </div>
+        <div class="product">
+          <div class="productTop" aria-hidden="true">
+            <svg class="heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+          </div>
+          <div class="productMedia">
+            <img class="productImg" src="{% static 'predictor/images/Macbook.png' %}" alt="Macbook" />
+          </div>
+          <div class="productBody">
+            <div class="name">Apple Macbook Pro Max<br/>128GB Deep Purple</div>
+            <div class="price">$900</div>
+            <button class="buy" type="button">Buy Now</button>
+          </div>
+        </div>
+        <div class="product">
+          <div class="productTop" aria-hidden="true">
+            <svg class="heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+          </div>
+          <div class="productMedia">
+            <img class="productImg" src="{% static 'predictor/images/Macbook.png' %}" alt="Macbook" />
+          </div>
+          <div class="productBody">
+            <div class="name">Apple Macbook Pro Max<br/>128GB Deep Purple</div>
+            <div class="price">$900</div>
+            <button class="buy" type="button">Buy Now</button>
+          </div>
+        </div>
+        <div class="product">
+          <div class="productTop" aria-hidden="true">
+            <svg class="heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+          </div>
+          <div class="productMedia">
+            <img class="productImg" src="{% static 'predictor/images/Macbook.png' %}" alt="Macbook" />
+          </div>
+          <div class="productBody">
+            <div class="name">Apple Macbook Pro Max<br/>128GB Deep Purple</div>
+            <div class="price">$900</div>
+            <button class="buy" type="button">Buy Now</button>
+          </div>
+        </div>
+        <div class="product">
+          <div class="productTop" aria-hidden="true">
+            <svg class="heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+          </div>
+          <div class="productMedia">
+            <img class="productImg" src="{% static 'predictor/images/Macbook.png' %}" alt="Macbook" />
+          </div>
+          <div class="productBody">
+            <div class="name">Apple Macbook Pro Max<br/>128GB Deep Purple</div>
+            <div class="price">$900</div>
+            <button class="buy" type="button">Buy Now</button>
+          </div>
+        </div>
+        <div class="product">
+          <div class="productTop" aria-hidden="true">
+            <svg class="heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+          </div>
+          <div class="productMedia">
+            <img class="productImg" src="{% static 'predictor/images/Macbook.png' %}" alt="Macbook" />
+          </div>
+          <div class="productBody">
+            <div class="name">Apple Macbook Pro Max<br/>128GB Deep Purple</div>
+            <div class="price">$900</div>
+            <button class="buy" type="button">Buy Now</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section id="about" class="stepsSection">
+    <div class="stepsHeader">
+      <div class="stepsKicker">Langkah Mudah</div>
+      <h2 class="stepsTitle">Prediksi Harga Laptop</h2>
+      <div class="stepsSubtitle">Cepat, bersih, transparan</div>
+    </div>
+    <div class="stepsGrid">
+      <div class="stepCard">
+        <div class="stepIcon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 1 1 7.07 0l-6.36 6.36a5 5 0 1 1-7.07-7.07L8 8"/><path d="M7 7h.01"/></svg>
+        </div>
+        <h3>Accurate prediction</h3>
+        <p>Gunakan model regresi untuk estimasi harga yang konsisten berdasarkan fitur laptop.</p>
+      </div>
+      <div class="stepCard">
+        <div class="stepIcon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/></svg>
+        </div>
+        <h3>Clean inputs</h3>
+        <p>Form prediksi membatasi pilihan kategori agar input tetap valid dan rapi.</p>
+      </div>
+      <div class="stepCard">
+        <div class="stepIcon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M8 21h8"/><path d="m12 17-4-6h8Z"/><circle cx="12" cy="5" r="2"/></svg>
+        </div>
+        <h3>Transparent output</h3>
+        <p>Hasil ditampilkan dalam Euro dan Rupiah (kurs hanya untuk display).</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+
+    <section class="sale" aria-label="Promo banner">
+      <div class="saleContent">
+        <h2>Prediction <span>Now</span></h2>
+        <p>Mulai prediksi harga laptop secara cepat dan mudah.</p>
+        <a class="shop" href="/predict">Predict Now</a>
+      </div>
+    </section>
+
+    <footer id="contact" class="footer">
+      <div>
+        <div class="brandRow">cyber</div>
+        <div>Landing page untuk aplikasi prediksi harga laptop berbasis dataset.</div>
+      </div>
+      <div>
+        <h4>Menu</h4>
+        <a href="/">Home</a>
+        <a href="#about">About</a>
+        <a href="/predict">Predict</a>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
